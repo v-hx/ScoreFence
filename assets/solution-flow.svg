@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="360" viewBox="0 0 1200 360" role="img" aria-labelledby="title desc">
+  <title id="title">How ScoreFence works</title>
+  <desc id="desc">Target, adapter, probe engine, and portable report</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#071521"/>
+      <stop offset="1" stop-color="#0D2636"/>
+    </linearGradient>
+    <linearGradient id="brand" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#51E3C2"/>
+      <stop offset="1" stop-color="#53A7FF"/>
+    </linearGradient>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0 0 L0 6 L9 3 Z" fill="#557A90"/>
+    </marker>
+  </defs>
+
+  <rect width="1200" height="360" rx="26" fill="url(#bg)"/>
+  <text x="600" y="58" text-anchor="middle" fill="#F3FAFF" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="32" font-weight="740">How it works</text>
+
+  <g transform="translate(48 102)" font-family="Inter,Segoe UI,Arial,sans-serif">
+    <g>
+      <rect width="234" height="190" rx="20" fill="#0C2230" stroke="#294B5E"/>
+      <circle cx="83" cy="72" r="13" fill="#51E3C2"/>
+      <circle cx="151" cy="52" r="13" fill="#53A7FF"/>
+      <circle cx="151" cy="93" r="13" fill="#8B9EFF"/>
+      <path d="M96 68 L138 55 M96 76 L138 89" stroke="#476D82" stroke-width="5" stroke-linecap="round"/>
+      <text x="117" y="139" text-anchor="middle" fill="#E8F3F8" font-size="21" font-weight="700">Target</text>
+      <text x="117" y="165" text-anchor="middle" fill="#7F9EAE" font-size="16">Any retrieval path</text>
+    </g>
+
+    <path d="M244 95 H278" stroke="#557A90" stroke-width="3" marker-end="url(#arrow)"/>
+
+    <g transform="translate(290 0)">
+      <rect width="234" height="190" rx="20" fill="#0C2230" stroke="#397181"/>
+      <g transform="translate(67 36)" stroke="url(#brand)" stroke-width="5" stroke-linecap="round">
+        <path d="M0 0 V75 M33 0 V75 M66 0 V75 M99 0 V75"/>
+        <path d="M-9 21 H108 M-9 55 H108"/>
+      </g>
+      <text x="117" y="139" text-anchor="middle" fill="#E8F3F8" font-size="21" font-weight="700">Adapter</text>
+      <text x="117" y="165" text-anchor="middle" fill="#7F9EAE" font-size="16">Stable protocol</text>
+    </g>
+
+    <path d="M534 95 H568" stroke="#557A90" stroke-width="3" marker-end="url(#arrow)"/>
+
+    <g transform="translate(580 0)">
+      <rect width="234" height="190" rx="20" fill="#0C2230" stroke="#435D83"/>
+      <circle cx="73" cy="58" r="10" fill="#51E3C2"/><circle cx="117" cy="58" r="10" fill="#53A7FF"/><circle cx="161" cy="58" r="10" fill="#8B9EFF"/>
+      <path d="M68 96 H166" stroke="#355366" stroke-width="4" stroke-linecap="round"/>
+      <circle cx="89" cy="96" r="10" fill="#51E3C2"/><circle cx="134" cy="96" r="10" fill="#53A7FF"/>
+      <text x="117" y="139" text-anchor="middle" fill="#E8F3F8" font-size="21" font-weight="700">Probe engine</text>
+      <text x="117" y="165" text-anchor="middle" fill="#7F9EAE" font-size="16">Observe behavior</text>
+    </g>
+
+    <path d="M824 95 H858" stroke="#557A90" stroke-width="3" marker-end="url(#arrow)"/>
+
+    <g transform="translate(870 0)">
+      <rect width="234" height="190" rx="20" fill="#0C2230" stroke="#38685E"/>
+      <rect x="77" y="31" width="80" height="84" rx="13" fill="#071721" stroke="#31584F"/>
+      <path d="M94 72 L109 87 L140 53" fill="none" stroke="#66E2B2" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="117" y="139" text-anchor="middle" fill="#E8F3F8" font-size="21" font-weight="700">Report</text>
+      <text x="117" y="165" text-anchor="middle" fill="#7F9EAE" font-size="16">Portable evidence</text>
+    </g>
+  </g>
+</svg>
