@@ -1,0 +1,68 @@
+# Conceptual ScoreFence configuration for the planned CLI.
+# This file documents the target interface; the CLI is not implemented yet.
+
+version: scorefence.dev/v1alpha1
+
+target:
+  name: retrieval-staging
+  adapter: generic_http
+  base_url: https://retrieval.example.test
+  auth:
+    bearer_token_env: RETRIEVAL_TOKEN
+  operations:
+    create_namespace:
+      method: POST
+      path: /test-namespaces
+    upsert:
+      method: POST
+      path: /test-namespaces/{namespace}/items
+    search:
+      method: POST
+      path: /test-namespaces/{namespace}/search
+    delete_namespace:
+      method: DELETE
+      path: /test-namespaces/{namespace}
+  response_mapping:
+    results_path: results
+    id_field: id
+    score_field: score
+
+contract:
+  metric: cosine
+  value_kind: distance
+  better_when: lower
+  result_order: ascending
+  expected_range: [0.0, 2.0]
+  score_stage: vector_search
+  threshold:
+    operator: lte
+    value: 0.30
+
+probe:
+  mode: direct_vectors
+  exact_search: preferred
+  repeats: 3
+  timeout_seconds: 15
+  namespace:
+    strategy: temporary_collection
+    prefix: sf_probe_
+    ttl_minutes: 30
+  cleanup:
+    always: true
+    verify: true
+    retries: 3
+
+tolerance:
+  absolute: 1.0e-6
+  relative: 1.0e-5
+  ordering_margin: 0.01
+
+output:
+  formats:
+    - terminal
+    - json
+    - markdown
+  directory: .scorefence/reports
+  redact:
+    credentials: true
+    endpoints: false
