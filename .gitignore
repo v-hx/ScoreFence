@@ -17,3 +17,5 @@ build/
 .env.*
 !.env.example
 
+.hypothesis/
+/custom_ignore/

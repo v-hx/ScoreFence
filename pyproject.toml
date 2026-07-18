@@ -1,0 +1,95 @@
+[build-system]
+requires = ["hatchling>=1.26,<2"]
+build-backend = "hatchling.build"
+
+[project]
+name = "scorefence"
+version = "0.1.0a0"
+description = "Contract testing for scores crossing retrieval and ranking boundaries"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+  "pydantic>=2.13,<3",
+]
+classifiers = [
+  "Development Status :: 2 - Pre-Alpha",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.14",
+  "Typing :: Typed",
+]
+
+[dependency-groups]
+test = [
+  "hypothesis>=6.148,<7",
+  "pytest>=9,<10",
+  "pytest-cov>=7,<8",
+]
+quality = [
+  "mypy>=1.18,<2",
+  "ruff>=0.14,<0.16",
+]
+dev = [
+  { include-group = "test" },
+  { include-group = "quality" },
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/scorefence"]
+
+[tool.pytest.ini_options]
+addopts = [
+  "--import-mode=importlib",
+  "--strict-config",
+  "--strict-markers",
+  "-ra",
+]
+testpaths = ["tests"]
+
+[tool.coverage.run]
+branch = true
+source = ["scorefence"]
+
+[tool.coverage.report]
+fail_under = 100
+show_missing = true
+skip_covered = true
+
+[tool.ruff]
+line-length = 100
+src = ["src", "tests"]
+target-version = "py314"
+
+[tool.ruff.lint]
+select = [
+  "B",
+  "C4",
+  "D",
+  "E4",
+  "E7",
+  "E9",
+  "F",
+  "I",
+  "PIE",
+  "PTH",
+  "RUF",
+  "S",
+  "SIM",
+  "UP",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["D", "S101"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.mypy]
+plugins = ["pydantic.mypy"]
+python_version = "3.14"
+strict = true
+files = ["src", "tests"]
+warn_unreachable = true
+
+[[tool.mypy.overrides]]
+module = "hypothesis.*"
+ignore_missing_imports = true
