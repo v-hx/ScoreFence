@@ -4,7 +4,19 @@ ScoreFence is currently a design-stage repository. This document establishes the
 
 ## Core principle
 
-Every adapter or rule must answer a question about the score contract. Changes that turn ScoreFence into a general retrieval-evaluation framework should be discussed separately.
+Every adapter, probe pack, or rule must answer a question about the score contract. Changes that turn ScoreFence into a general relevance-evaluation framework should be discussed separately.
+
+## Adding a probe pack
+
+A probe pack must:
+
+1. name one coherent score family and supported stages;
+2. define controlled fixtures and expected relations independently of a target implementation;
+3. declare required adapter capabilities;
+4. document tolerances, confidence factors, and limitations;
+5. return `INCONCLUSIVE` when evidence is insufficient;
+6. avoid comparing its numeric range with another pack unless an explicit transformation contract exists;
+7. include deterministic fixtures for PASS, FAIL, and ambiguous behavior.
 
 ## Adding an adapter
 
@@ -32,7 +44,8 @@ A rule proposal must contain:
 
 ## Documentation consistency
 
-Behavior changes must update every related document, example, diagram, and report format. An automated check validates documentation structure and prevents one-sided changes to related files.
+Behavior changes must update every related document, example, diagram, and report
+format.
 
 ## Pull request checklist
 
@@ -41,5 +54,6 @@ Behavior changes must update every related document, example, diagram, and repor
 - [ ] The cleanup path is tested
 - [ ] Secrets are redacted
 - [ ] No unknown score is normalized silently
-- [ ] Both documentation languages and examples are updated
+- [ ] Probe-pack assumptions are explicit and isolated from the core
+- [ ] Documentation and examples are updated
 - [ ] Regression tests are included

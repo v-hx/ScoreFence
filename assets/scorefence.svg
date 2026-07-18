@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="340" viewBox="0 0 1200 340" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="360" viewBox="0 0 1200 360" role="img" aria-labelledby="title desc">
   <title id="title">ScoreFence</title>
-  <desc id="desc">Vendor-neutral retrieval score contract testing</desc>
+  <desc id="desc">Contract testing for ordering, thresholds, and score transformations</desc>
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#06131F"/>
@@ -10,56 +10,63 @@
       <stop offset="0" stop-color="#51E3C2"/>
       <stop offset="1" stop-color="#53A7FF"/>
     </linearGradient>
-    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
-      <path d="M0 0 L0 6 L9 3 Z" fill="#557A90"/>
-    </marker>
   </defs>
 
-  <rect width="1200" height="340" rx="28" fill="url(#bg)"/>
-  <circle cx="1120" cy="10" r="200" fill="#2C688E" opacity="0.10"/>
-  <circle cx="80" cy="360" r="180" fill="#218C78" opacity="0.08"/>
+  <rect width="1200" height="360" rx="28" fill="url(#bg)"/>
+  <circle cx="1140" cy="12" r="210" fill="#2C688E" opacity=".10"/>
+  <circle cx="30" cy="380" r="190" fill="#218C78" opacity=".08"/>
 
-  <g transform="translate(64 82)" font-family="Inter,Segoe UI,Arial,sans-serif">
-    <rect width="72" height="72" rx="19" fill="#0D2838" stroke="#315A70"/>
-    <circle cx="18" cy="22" r="5" fill="#51E3C2"/>
-    <circle cx="18" cy="36" r="5" fill="#53A7FF"/>
-    <circle cx="18" cy="50" r="5" fill="#8B9EFF"/>
-    <path d="M31 15 V57 M42 15 V57 M53 15 V57 M28 25 H56 M28 47 H56" stroke="url(#brand)" stroke-width="3" stroke-linecap="round"/>
-    <path d="M41 31 L47 37 L59 24" fill="none" stroke="#E9FFF9" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <g transform="translate(72 58)" font-family="Inter,Segoe UI,Arial,sans-serif">
+    <g transform="translate(0 8)">
+      <rect width="64" height="64" rx="17" fill="#0D2838" stroke="#315A70"/>
+      <circle cx="15" cy="20" r="4.5" fill="#51E3C2"/>
+      <circle cx="15" cy="32" r="4.5" fill="#53A7FF"/>
+      <circle cx="15" cy="44" r="4.5" fill="#8B9EFF"/>
+      <path d="M28 13 V51 M38 13 V51 M48 13 V51 M25 23 H51 M25 42 H51" stroke="url(#brand)" stroke-width="2.7" stroke-linecap="round"/>
+      <path d="M37 28 L43 34 L54 22" fill="none" stroke="#E9FFF9" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
 
-    <text x="94" y="55" fill="#F5FBFF" font-size="64" font-weight="760" letter-spacing="-2">ScoreFence</text>
-    <text x="2" y="119" fill="#B4CBD7" font-size="26">Retrieval score contracts, verified.</text>
-    <text x="2" y="158" fill="#7898AA" font-size="18">Vendor-neutral · Out-of-band · Evidence-first</text>
+    <text x="84" y="20" fill="#71DCC8" font-size="14" font-weight="700" letter-spacing="2.1">SCORE CONTRACT TESTING</text>
+    <text x="82" y="78" fill="#F5FBFF" font-size="62" font-weight="700" letter-spacing="-2">ScoreFence</text>
+    <text x="2" y="128" fill="#B8CFDA" font-size="23">Verify what ranked scores mean across system boundaries.</text>
+    <text x="2" y="165" fill="#91AAB8" font-size="17">Controlled probes · Real execution paths · Portable evidence</text>
+
+    <g transform="translate(2 198)" font-size="13" font-weight="700" letter-spacing=".8">
+      <rect width="160" height="34" rx="17" fill="#12342F" stroke="#2D7568"/>
+      <text x="80" y="22" text-anchor="middle" fill="#7DE6D0">ISOLATED PROBES</text>
+      <g transform="translate(174 0)">
+        <rect width="160" height="34" rx="17" fill="#102F43" stroke="#2E6685"/>
+        <text x="80" y="22" text-anchor="middle" fill="#79BFFF">EVIDENCE-FIRST</text>
+      </g>
+    </g>
   </g>
 
-  <g transform="translate(650 71)" font-family="Inter,Segoe UI,Arial,sans-serif">
-    <g>
-      <rect width="132" height="156" rx="20" fill="#0B2230" stroke="#294B5E"/>
-      <circle cx="44" cy="63" r="11" fill="#51E3C2"/>
-      <circle cx="88" cy="47" r="11" fill="#53A7FF"/>
-      <circle cx="88" cy="82" r="11" fill="#8B9EFF"/>
-      <path d="M55 61 L77 51 M55 66 L77 78" stroke="#476D82" stroke-width="4" stroke-linecap="round"/>
-      <text x="66" y="129" text-anchor="middle" fill="#B9CED8" font-size="16" font-weight="700">TARGET</text>
+  <g transform="translate(720 60)" font-family="Inter,Segoe UI,Arial,sans-serif">
+    <rect width="420" height="240" rx="24" fill="#081B27" stroke="#294B5E"/>
+    <text x="28" y="38" fill="#9AB1BD" font-size="14" font-weight="700" letter-spacing="1.3">CHECK THE EFFECTIVE CONTRACT</text>
+
+    <g transform="translate(26 62)">
+      <rect width="368" height="46" rx="12" fill="#0D2633"/>
+      <circle cx="24" cy="23" r="12" fill="#143F3B"/>
+      <path d="M20 26 L24 20 L28 26" fill="none" stroke="#63DFC5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="48" y="29" fill="#E8F3F8" font-size="17" font-weight="700">ORDERING</text>
+      <text x="338" y="30" text-anchor="end" fill="#63DFC5" font-size="18" font-weight="700">↑ / ↓</text>
     </g>
 
-    <path d="M143 78 H186" stroke="#557A90" stroke-width="3" marker-end="url(#arrow)"/>
-
-    <g transform="translate(198 0)">
-      <rect width="132" height="156" rx="20" fill="#0B2230" stroke="#397181"/>
-      <g transform="translate(28 31)" stroke="url(#brand)" stroke-width="5" stroke-linecap="round">
-        <path d="M0 0 V70 M25 0 V70 M50 0 V70 M75 0 V70"/>
-        <path d="M-8 19 H83 M-8 52 H83"/>
-      </g>
-      <text x="66" y="129" text-anchor="middle" fill="#71DEC9" font-size="16" font-weight="700">ADAPTER</text>
+    <g transform="translate(26 119)">
+      <rect width="368" height="46" rx="12" fill="#0D2633"/>
+      <circle cx="24" cy="23" r="12" fill="#15384B"/>
+      <path d="M18 18 H30 M18 28 H30" stroke="#69BFFF" stroke-width="2.2" stroke-linecap="round"/>
+      <text x="48" y="29" fill="#E8F3F8" font-size="17" font-weight="700">THRESHOLD</text>
+      <text x="338" y="30" text-anchor="end" fill="#69BFFF" font-size="18" font-weight="700">≥ / ≤</text>
     </g>
 
-    <path d="M341 78 H384" stroke="#557A90" stroke-width="3" marker-end="url(#arrow)"/>
-
-    <g transform="translate(396 0)">
-      <rect width="132" height="156" rx="20" fill="#0B2230" stroke="#38685E"/>
-      <rect x="31" y="26" width="70" height="78" rx="12" fill="#071721" stroke="#31584F"/>
-      <path d="M47 67 L60 80 L86 51" fill="none" stroke="#66E2B2" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
-      <text x="66" y="129" text-anchor="middle" fill="#72E0B5" font-size="16" font-weight="700">CONTRACT</text>
+    <g transform="translate(26 176)">
+      <rect width="368" height="46" rx="12" fill="#0D2633"/>
+      <circle cx="24" cy="23" r="12" fill="#292E50"/>
+      <text x="24" y="28" text-anchor="middle" fill="#AAB6FF" font-size="14" font-weight="700">ƒ</text>
+      <text x="48" y="29" fill="#E8F3F8" font-size="17" font-weight="700">TRANSFORM</text>
+      <text x="338" y="30" text-anchor="end" fill="#AAB6FF" font-size="18" font-weight="700">ƒ(x)</text>
     </g>
   </g>
 </svg>

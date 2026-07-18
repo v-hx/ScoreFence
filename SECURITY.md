@@ -15,14 +15,18 @@ ScoreFence must create a separate temporary collection, schema, namespace, or te
 Credentials should permit only:
 
 - creating a temporary namespace;
-- writing and reading probe vectors;
+- writing and reading controlled probe records;
 - deleting the created namespace.
 
 If the backend supports a pre-provisioned sandbox, permission to create production collections is not required.
 
 ### No customer content
 
-Deterministic probes consist of synthetic vectors and technical IDs. ScoreFence must not read customer documents to validate a score contract.
+The vector-retrieval pack uses synthetic vectors and technical IDs. Every future probe pack must use synthetic or explicitly supplied non-production fixtures by default. ScoreFence must not read customer documents, transactions, profiles, or model inputs to validate a score contract.
+
+### Probe-pack review
+
+A probe pack is executable test logic and must declare the data it creates, queries it sends, capabilities it requires, and cleanup behavior it expects. Packs must not introduce hidden network calls, download external datasets at runtime, or widen target permissions beyond their declared capabilities.
 
 ### Cleanup is mandatory
 
@@ -47,7 +51,7 @@ Logs and reports must never contain:
 
 ### SSRF and target restrictions
 
-If ScoreFence is offered as a hosted service, arbitrary target URLs create an SSRF risk. Product integration must apply an organization-scoped allowlist and reuse an already validated vector-store configuration instead of accepting an arbitrary raw URL.
+If ScoreFence is offered as a hosted service, arbitrary target URLs create an SSRF risk. The runner must apply a tenant-scoped allowlist and reuse an already validated target configuration instead of accepting an arbitrary raw URL.
 
 ## Threats outside the MVP
 
@@ -55,7 +59,7 @@ ScoreFence is not:
 
 - a prompt-injection scanner;
 - a data-loss prevention system;
-- a vector-database vulnerability scanner;
+- a target-system vulnerability scanner;
 - an authorization auditor;
 - proof of deletion for customer data.
 

@@ -1,0 +1,56 @@
+name: Bug report
+description: Report an incorrect probe, verdict, adapter behavior, or cleanup failure
+title: "[Bug]: "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for helping make score-contract checks reliable. Remove credentials, endpoints, and customer data before attaching reports.
+  - type: input
+    id: version
+    attributes:
+      label: ScoreFence version or commit
+      placeholder: v0.x or commit SHA
+    validations:
+      required: true
+  - type: input
+    id: backend
+    attributes:
+      label: Backend and version
+      placeholder: Backend name and version
+    validations:
+      required: true
+  - type: dropdown
+    id: mode
+    attributes:
+      label: Probe mode
+      options:
+        - Direct vectors / exact search
+        - Direct vectors / approximate search
+        - Text embeddings
+        - Native vs pipeline comparison
+        - Unknown
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior and redacted evidence
+    validations:
+      required: true
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety checklist
+      options:
+        - label: I removed credentials and customer content from this report.
+          required: true
+        - label: I included cleanup status if a probe namespace was created.
+          required: true

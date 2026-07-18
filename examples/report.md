@@ -4,8 +4,11 @@
 
 | Field | Value |
 |---|---|
-| Target | `retrieval-staging` |
+| Target | `candidate-search` |
 | Adapter | `generic_http` |
+| Probe pack | `vector_retrieval/v1alpha1` |
+| Boundary | `consumer_api` |
+| Score stage | `vector_search` |
 | Mode | `direct_vectors` |
 | Verdict | **FAIL** |
 | Confidence | `0.99 — verified` |

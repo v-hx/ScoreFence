@@ -1,17 +1,9 @@
 <div align="center">
-  <img src="assets/scorefence.svg" alt="ScoreFence — vendor-neutral retrieval score contract testing" width="100%" />
+  <img src="assets/scorefence.svg" alt="ScoreFence — contract testing for score ordering, thresholds, and transformations" width="100%" />
 </div>
 
 <p align="center">
-  <strong>A vendor-neutral probe that prevents retrieval systems from silently confusing distance, similarity, sorting, and thresholds.</strong>
-</p>
-
-<p align="center">
-  <img alt="Status: Design Ready" src="https://img.shields.io/badge/status-design%20ready-51E3C2?style=flat-square&labelColor=102B46" />
-  <img alt="Scope: Retrieval Reliability" src="https://img.shields.io/badge/scope-retrieval%20reliability-53A7FF?style=flat-square&labelColor=102B46" />
-  <img alt="Vendor neutral" src="https://img.shields.io/badge/design-vendor--neutral-8B9EFF?style=flat-square&labelColor=102B46" />
-  <img alt="Mode: Read-only probes" src="https://img.shields.io/badge/mode-isolated%20probes-F3C969?style=flat-square&labelColor=102B46" />
-  <img alt="Stage: Pre-alpha" src="https://img.shields.io/badge/release-pre--alpha-A9C6D8?style=flat-square&labelColor=102B46" />
+  <strong>Contract testing for scores crossing retrieval and ranking system boundaries.</strong>
 </p>
 
 > **Project status:** the documentation and MVP contract are ready; the executable CLI has not been implemented yet. Commands below describe the target interface and do not claim an available release.
@@ -36,18 +28,70 @@ As a result, a retrieval pipeline may appear healthy — requests pass, items ar
 
 **ScoreFence creates a small isolated dataset with mathematically known relationships, executes real searches, and validates the effective score contract of the entire path.**
 
+## Where ScoreFence fits
+
+ScoreFence is useful whenever a numeric value leaves the component that produced it and another independently implemented component uses that value to sort, filter, rank, or make a selection. The important condition is not that a response contains a field named `score`; it is that several boundaries may disagree about the field's meaning.
+
+```text
+producer → SDK/adapter → service/API → threshold/ranking policy → consumer
+```
+
+The current deterministic probe model is a strong fit for systems based on vector distance or similarity:
+
+| Area | Ranked objects | Typical contract failure |
+|---|---|---|
+| Semantic and document search | documents, passages, tickets, messages | a distance is treated as relevance |
+| Product and catalog search | products, categories, offers | a backend change reverses threshold polarity |
+| Retrieval-augmented applications | context chunks, memories, tool results | the best context is rejected before generation |
+| Recommendation candidate generation | items selected before a ranking model | a candidate adapter reverses nearest-neighbor order |
+| Multimodal similarity search | images, audio, video, code | one modality or SDK applies an undocumented transform |
+| Entity matching and deduplication | customer, product, or document candidates | unrelated records pass a duplicate threshold |
+| Multi-backend search gateways | results from interchangeable targets | identical API fields expose incompatible semantics |
+| Search migrations and upgrades | baseline and candidate systems | the schema stays stable while direction or range drifts |
+
+ScoreFence is most valuable at integration boundaries and change points: onboarding a target, replacing an adapter, upgrading an SDK, changing a metric, adding a ranking stage, migrating a backend, or investigating a silent quality regression.
+
+The architecture can later support domain-specific probe packs for rerankers, recommendation models, anomaly scores, or risk scores. Those packs need controlled domain fixtures and their own invariants. The vector-retrieval MVP does **not** claim to validate arbitrary model outputs merely because they are numeric.
+
+See [application areas and end-to-end scenarios](docs/USE_CASES.md) for a detailed fit model and examples.
+
+## End-to-end example: a silent migration regression
+
+Consider a catalog-search service whose original backend returns a distance: an exact match receives `0.00`, a nearby item `0.15`, and an unrelated item `0.95`. Its adapter exposes public relevance as `1 - distance`, and the application accepts results with `score >= 0.75`.
+
+The backend is later replaced by one that already returns higher-is-better similarity. The response schema remains unchanged, so the old adapter continues to calculate `1 - score`:
+
+```text
+native similarity   0.98   0.82   0.07
+public score        0.02   0.18   0.93
+semantic quality    best   near   unrelated
+```
+
+Requests still succeed, result lists are non-empty, and schema tests pass. The public API now rejects the best candidates and accepts the worst ones.
+
+ScoreFence runs one probe plan through both boundaries:
+
+```text
+direct backend path      exact > near > far   higher_is_better   PASS
+consumer-facing API      exact < near < far   lower_is_better    FAIL
+configured threshold     rejects exact, accepts far              FAIL
+suspected transform      public ≈ 1 - native
+```
+
+The result localizes the defect to the integration path before traffic is switched. After the adapter contract is corrected, the same probe becomes a regression test in CI.
+
 <div align="center">
-  <img src="assets/score-semantics.svg" alt="Why similarity and distance require opposite threshold operators" width="100%" />
+  <img src="assets/score-semantics.svg" alt="Cosine similarity and cosine distance preserve ranking while requiring opposite threshold polarity" width="100%" />
 </div>
 
 ## Why this is not an ordinary evaluation framework
 
-| Quality evaluation                                    | ScoreFence                                                     |
-| ----------------------------------------------------- | -------------------------------------------------------------- |
-| Evaluates answer quality on a question set            | Validates the technical contract at the retrieval boundary     |
-| Often invokes an LLM-as-a-judge                       | Does not require a generative model                            |
-| Requires a dataset and reference answers              | Uses a few synthetic vectors or documents                      |
-| The result may be subjective                          | Core invariants are mathematically verifiable                  |
+| Quality evaluation | ScoreFence |
+|---|---|
+| Evaluates answer quality on a question set | Validates the technical contract at the retrieval boundary |
+| Often invokes an LLM-as-a-judge | Does not require a generative model |
+| Requires a dataset and reference answers | Uses a few synthetic vectors or documents |
+| The result may be subjective | Core invariants are mathematically verifiable |
 | Searches across many possible causes of a poor answer | Localizes distance, similarity, ordering, and threshold errors |
 
 ScoreFence does not replace golden datasets, relevance benchmarks, or human evaluation. It covers an earlier layer: **whether components correctly understand each other’s numbers at all**.
@@ -55,7 +99,7 @@ ScoreFence does not replace golden datasets, relevance benchmarks, or human eval
 ## How it works
 
 <div align="center">
-  <img src="assets/solution-flow.svg" alt="Universal ScoreFence flow from target through the adapter protocol to a portable report" width="100%" />
+  <img src="assets/solution-flow.svg" alt="ScoreFence flow from a controlled probe plan through isolated execution and contract checks to an evidence report" width="100%" />
 </div>
 
 The basic deterministic probe uses direct vectors:
@@ -80,14 +124,14 @@ ScoreFence does not guess the backend from its name. It observes actual results 
 5. **metric fingerprint** — the behavior of scaled and opposite vectors is compatible with the declared metric;
 6. **pipeline preservation** — any intermediate API or retrieval consumer does not invert or reinterpret a backend result.
 
-The [theory document](docs/THEORY.en.md) explains the mathematics, limitations, and potential false conclusions in detail.
+The [theory document](docs/THEORY.md) explains the mathematics, limitations, and potential false conclusions in detail.
 
 ## Example detected error
 
 ```text
 ScoreFence v0.x — retrieval contract report
 
-Target       retrieval-staging/generic-http
+Target       candidate-search/generic-http
 Collection   sf_01J_probe_7f42
 Metric       declared: cosine
 Value kind   observed: distance
@@ -110,12 +154,14 @@ Confidence: 0.99 (direct-vector deterministic probe)
 Cleanup: probe collection deleted
 ```
 
-Complete examples: the [human-readable report](examples/report.en.md) and its [JSON form](examples/report.json).
+Complete examples: the [human-readable report](examples/report.md) and its [JSON form](examples/report.json).
 
 ## What the contract contains
 
 ```yaml
 contract:
+  pack: vector_retrieval/v1alpha1
+  boundary: consumer_api
   metric: cosine
   value_kind: distance
   better_when: lower
@@ -149,7 +195,8 @@ Validate a predefined contract:
 
 ```bash
 scorefence validate \
-  --target retrieval-staging \
+  --target candidate-search \
+  --pack vector_retrieval/v1alpha1 \
   --contract contracts/staging.yaml \
   --format terminal,json
 ```
@@ -200,23 +247,25 @@ ScoreFence must never mix test records with user data. A safe implementation mus
 - record the cleanup result in the report;
 - return `INCONCLUSIVE` when isolation cannot be guaranteed.
 
-See the [security model](SECURITY.en.md) for details.
+See the [security model](SECURITY.md) for details.
 
 ## Architecture
 
-The proposed structure is intentionally small:
+The proposed structure separates four independent extension axes:
 
 ```text
-CLI / API
-   │
-   ├── Probe planner
-   ├── Target adapter ──► real vector search path
-   ├── Inference engine
-   ├── Contract validator
-   └── Reporters: terminal / JSON / Markdown / SARIF
+Runner: CLI / library / scheduled job
+   ↓
+Probe pack: fixtures + expected relations + required capabilities
+   ↓
+Target adapter: direct backend or consumer-facing pipeline
+   ↓
+Core: observations → inference → contract validation → evidence report
 ```
 
-An adapter owns only the probe-namespace lifecycle, vector insertion, and search. Mathematics, inference, and rules remain backend-agnostic. See the [architecture](docs/ARCHITECTURE.en.md) and [detection model](docs/DETECTION_MODEL.en.md).
+The **core** owns contracts, observations, findings, confidence, comparison, and reports. A **probe pack** defines what controlled evidence means for one score family. An **adapter** owns transport and isolated fixture lifecycle but never interprets a score. A **runner** decides where and when validation executes.
+
+The first probe pack is `vector_retrieval`; future packs are separate extensions rather than hidden heuristics in the core. See the [architecture](docs/ARCHITECTURE.md) and [detection model](docs/DETECTION_MODEL.md).
 
 ## Universal integration
 
@@ -229,13 +278,13 @@ ScoreFence is a standalone CLI and library core. It requires no specific platfor
 5. The report is available as terminal, JSON, or Markdown output and can be used locally, in CI, from a cron job, or by any control plane.
 6. After any component upgrade, the probe runs again and detects drift before users are affected.
 
-The adapter is a plugin boundary: implementations for databases, HTTP APIs, SDKs, and complete retrieval pipelines connect without changes to the inference engine. See the [universal integration patterns](docs/INTEGRATION.en.md).
+The adapter is a plugin boundary: implementations for databases, HTTP APIs, SDKs, and complete retrieval pipelines connect without changes to the inference engine. See the [universal integration patterns](docs/INTEGRATION.md).
 
 ## MVP boundaries
 
 The first release includes:
 
-- deterministic direct-vector probes;
+- the `vector_retrieval` probe pack with deterministic direct-vector probes;
 - a public vendor-neutral adapter protocol;
 - a reference in-memory adapter;
 - one generic HTTP adapter configured through field mappings;
@@ -255,20 +304,23 @@ The first release **does not include**:
 - automatic mutation of vector-store settings;
 - universal support for every vector database.
 
+It also does not present arbitrary classifier, risk, anomaly, recommendation, or reranker values as validated vector-score contracts. Supporting those score families requires an explicit probe pack with suitable fixtures and invariants.
+
 These boundaries make an honest, working MVP achievable in one to two weeks.
 
 ## Documentation
 
-| Document                                        | Purpose                                                           |
-| ----------------------------------------------- | ----------------------------------------------------------------- |
-| [Theory](docs/THEORY.en.md)                     | Detailed explanation of the problem, mathematics, and limitations |
-| [Architecture](docs/ARCHITECTURE.en.md)         | Components, data flow, adapters, and deployment model             |
-| [Detection model](docs/DETECTION_MODEL.en.md)   | Probes, rules, confidence, and verdicts                           |
-| [Universal integration](docs/INTEGRATION.en.md) | CLI, library, CI, HTTP, and pipeline scenarios                    |
-| [Originality](docs/ORIGINALITY.en.md)           | Adjacent work, differentiation, and novelty boundaries            |
-| [Roadmap](ROADMAP.en.md)                        | Path from the CLI to a product capability                         |
-| [Contributing](CONTRIBUTING.en.md)              | Rules for adding adapters and checks                              |
-| [Security](SECURITY.en.md)                      | Isolation, cleanup, and credential handling                       |
+| Document | Purpose |
+|---|---|
+| [Theory](docs/THEORY.md) | Detailed explanation of the problem, mathematics, and limitations |
+| [Application areas](docs/USE_CASES.md) | Fit criteria, end-to-end scenarios, lifecycle, and non-use cases |
+| [Architecture](docs/ARCHITECTURE.md) | Components, data flow, adapters, and deployment model |
+| [Detection model](docs/DETECTION_MODEL.md) | Probes, rules, confidence, and verdicts |
+| [Universal integration](docs/INTEGRATION.md) | CLI, library, CI, HTTP, and pipeline scenarios |
+| [Originality](docs/ORIGINALITY.md) | Adjacent work, differentiation, and novelty boundaries |
+| [Roadmap](ROADMAP.md) | Path from the CLI to a product capability |
+| [Contributing](CONTRIBUTING.md) | Rules for adding adapters and checks |
+| [Security](SECURITY.md) | Isolation, cleanup, and credential handling |
 
 ## Why ScoreFence
 
@@ -277,8 +329,8 @@ The name describes the project’s function:
 - **Score** — the number crossing the boundary between a search backend and any consumer;
 - **Fence** — a verifiable boundary that prevents components from silently agreeing on the wrong semantics.
 
-A targeted search in software and vector-search contexts did not show an obvious existing project with this name. GitHub, package registries, and trademark databases still need a separate review before public release.
+A targeted search in software and vector-search contexts did not show an obvious existing project with this name. Code-hosting platforms, package registries, and trademark databases still need a separate review before public release.
 
 ## License
 
-No license was selected intentionally during the design stage. Before publication, determine IP ownership and approve an open-source license; Apache-2.0 and MIT are natural candidates for an independent project.
+No license was selected intentionally during the design stage. Before publication, determine IP ownership and approve an appropriate open-source license.

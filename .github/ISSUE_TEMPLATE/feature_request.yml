@@ -1,0 +1,34 @@
+name: Feature request
+description: Propose a focused score-contract capability, adapter, or detection rule
+title: "[Feature]: "
+labels: ["enhancement", "triage"]
+body:
+  - type: textarea
+    id: boundary
+    attributes:
+      label: Which score-contract boundary does this improve?
+      description: Explain the metric, value kind, direction, ordering, threshold, stage, or drift problem.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Minimal evidence needed
+      description: What observations would let ScoreFence prove the finding without guessing?
+    validations:
+      required: true
+  - type: textarea
+    id: counterexample
+    attributes:
+      label: Counterexample or ambiguous case
+      description: When must the result be WARN or INCONCLUSIVE rather than FAIL?
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Proposed MVP
+      description: Keep it small and out of the production data path.
+    validations:
+      required: true
+
